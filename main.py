@@ -15,37 +15,50 @@ column_values[19] = str("SALE PRICE")
 df.columns = column_values  # Passing in new correct list into column labels
 # print(df.columns.values)
 
-#Create list of cat and num variables
-print(df.head)
+#Create list of cat and num variables v1
 cat_var = []
 num_var = []
 
-# Categorical variables
-cat_var = df["BUILDING CLASS CATEGORY"].values.tolist()
-cat_var.append(df["TAX CLASS AT PRESENT"].values.tolist())
-cat_var.append(df["NEIGHBORHOOD"].values.tolist())
-cat_var.append(df["ADDRESS"].values.tolist())
-cat_var.append(df["BUILDING CLASS AT TIME OF SALE"].values.tolist())
-cat_var.append(df["APARTMENT NUMBER"].values.tolist())
-cat_var.append(df["SALE DATE"].values.tolist())
+numerics_df = df.select_dtypes(include=[np.number])
+cat_df = df.select_dtypes(exclude=[np.number])
 
-#Numerical variables
-num_var = df["BOROUGH"].values.tolist()
-num_var.append(df["BLOCK"].values.tolist())
-num_var.append(df["LOT"].values.tolist())
-num_var.append(df["ZIP CODE"].values.tolist())
-num_var.append(df["'RESIDENTIAL UNITS"].values.tolist())
-num_var.append(df["COMMERCIAL UNITS"].values.tolist())
-num_var.append(df["TOTAL UNITS"].values.tolist())
-num_var.append(df["LAND SQUARE FEET"].values.tolist())
-num_var.append(df["GROSS SQUARE FEET"].values.tolist())
-num_var.append(df["COMMERCIAL UNITS"].values.tolist())
-num_var.append(df["YEAR BUILT"].values.tolist())
-num_var.append(df["SALE PRICE"].values.tolist())
-num_var.append(df["GROSS SQUARE FEET"].values.tolist())
+for col in numerics_df.columns:
+    num_var.append(col)
+
+for col in cat_df.columns:
+    cat_var.append(col)
+
+num_var.append(cat_var[7])
+cat_var.remove([7])
+
+num_var.append(cat_var[8])
+cat_var.remove([8])
+
+num_var.append(cat_var[9])
+cat_var.remove([9])
+
+num_var.append(cat_var[10])
+cat_var.remove([10])
+
+num_var.append(cat_var[12])
+cat_var.remove([12])
 
 
-print(df.columns)
+print(num_var)
+print(cat_var)
+
+#Create list of cat and num variables v2
+
+
+
+#Replace values
+df.replace('\$','', regex=True, inplace=True)
+df.replace(',','', regex=True, inplace=True)
+
+
+
+
+
 
 
 
