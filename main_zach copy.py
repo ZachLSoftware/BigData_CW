@@ -4,35 +4,26 @@ import matplotlib.pyplot as plt
 
 
 
-def markOutliers(df,columns):
+def markOutliers(df,column):
 
     t = np.zeros(df.shape[0])
     z = np.zeros(df.shape[0])
-    for column in columns:
-        mean=np.mean(df[column])
-        sd=np.std(df[column])
-        threshold=3
-        test=[]
+    mean=np.mean(df[column])
+    sd=np.std(df[column])
+    threshold=3
+    test=[]
 
-        for i, x in enumerate(df[column]):
-            if column=="SALE PRICE":
-                if x<100000:
-                    t[i]=1
-            z[i]=(x-mean)/sd
-            if z[i]>=threshold:
-                test.append((x,z[i]))
-                t[i]=1
-        print(column,'\n', test)
+    for i, x in enumerate(df[column]):
+        z[i]=(x-mean)/sd
+        if z[i] <= -threshold or z[i]>=threshold:
+            test.append(x)
+            t[i]=1
     df['outlier']=t
-    
     return df
     # t = np.zeros(df.shape[0])
 
     # for i, x in enumerate(df['SALE PRICE']):
     #     if x<100000 or x > 100000000:
-    #         t[i]=1
-    # for i, x in enumerate(df['TOTAL UNITS']):
-    #     if x>300:
     #         t[i]=1
     # df['outlier']=t
     # return df
@@ -45,8 +36,9 @@ def step1_clean():
 
     # Rename incorrect column names
     df.rename(columns={"APART\r\nMENT\r\nNUMBER":"APARTMENT NUMBER", "SALE\r\nPRICE":"SALE PRICE"}, inplace = True)
-    numerical=['RESIDENTIAL UNITS','COMMERCIAL UNITS','TOTAL UNITS','LAND SQUARE FEET','GROSS SQUARE FEET','SALE PRICE']
-    categorical=['BOROUGH','NEIGHBORHOOD', 'BUILDING CLASS CATEGORY', 'TAX CLASS AT PRESENT', 'BLOCK','LOT','EASE-MENT', 'BUILDING CLASS AT PRESENT', 'ADDRESS', 'APARTMENT NUMBER','ZIP CODE','YEAR BUILT','TAX CLASS AT TIME OF SALE', 'BUILDING CLASS AT TIME OF SALE', 'SALE DATE'
+
+    numerical=['BOROUGH','BLOCK','LOT','ZIP CODE','RESIDENTIAL UNITS','COMMERCIAL UNITS','TOTAL UNITS','LAND SQUARE FEET','GROSS SQUARE FEET','YEAR BUILT','TAX CLASS AT TIME OF SALE','SALE PRICE']
+    categorical=['NEIGHBORHOOD', 'BUILDING CLASS CATEGORY', 'TAX CLASS AT PRESENT', 'EASE-MENT', 'BUILDING CLASS AT PRESENT', 'ADDRESS', 'APARTMENT NUMBER', 'BUILDING CLASS AT TIME OF SALE', 'SALE DATE'
     ]
     # df_num_man=df.filter(['RESIDENTIAL UNITS', 'COMMERCIAL UNITS', 'TOTAL UNITS', 'LAND SQUARE FEET', 'GROSS SQUARE FEET', 'SALE PRICE']).copy()
     num_cols=df[numerical].copy()
@@ -68,11 +60,10 @@ def step1_clean():
     df.drop_duplicates(inplace=True)
     df.dropna(inplace=True)
     print(df.shape)
-
-    # df=markOutliers(df, numerical)
-    # df=df[df.outlier==0]
-    # df=df.drop('outlier', axis=1)
-    # print(df.shape)
+    for column in df.select_dtypes(include=[np.number]).copy().columns:
+        df=markOutliers(df, column)
+        df=df[df.outlier==0]
+        df.drop('outlier', axis=1, inplace=True)
     return df
 
 
