@@ -29,7 +29,7 @@ def markOutliers(df,columns):
     # t = np.zeros(df.shape[0])
 
     # for i, x in enumerate(df['SALE PRICE']):
-    #     if x<100000 or x > 100000000:
+    #     if x<100000:
     #         t[i]=1
     # for i, x in enumerate(df['TOTAL UNITS']):
     #     if x>300:
@@ -69,10 +69,10 @@ def step1_clean():
     df.dropna(inplace=True)
     print(df.shape)
 
-    # df=markOutliers(df, numerical)
-    # df=df[df.outlier==0]
-    # df=df.drop('outlier', axis=1)
-    # print(df.shape)
+    df=markOutliers(df, numerical)
+    df=df[df.outlier==0]
+    df=df.drop('outlier', axis=1)
+    print(df.shape)
     return df
 
 
@@ -89,13 +89,29 @@ df.reset_index(drop=True,inplace=True)
 print(df.head())
 
 df['lnprice']=np.log(df['SALE PRICE'])
-df.to_csv('./tempnonenorm.csv',index=True)
+# df.to_csv('./tempnonenorm.csv',index=True)
 dfnorm=normalize(df)
 
+numerical=['RESIDENTIAL UNITS','COMMERCIAL UNITS','TOTAL UNITS','LAND SQUARE FEET','GROSS SQUARE FEET','SALE PRICE']
+categorical=['NEIGHBORHOOD', 'BUILDING CLASS CATEGORY', 'TAX CLASS AT PRESENT', 'BLOCK','LOT', 'BUILDING CLASS AT PRESENT', 'ADDRESS', 'ZIP CODE','YEAR BUILT','TAX CLASS AT TIME OF SALE', 'BUILDING CLASS AT TIME OF SALE', 'SALE DATE']
 
-f, ax = plt.subplots(2)
-df.plot.scatter(x="lnprice", y="TOTAL UNITS", ax=ax[0], title="Original data")
-dfnorm.plot.scatter(x="lnprice", y="TOTAL UNITS", ax=ax[1], title="Normalized Data")
-f.subplots_adjust(hspace=1)
-plt.show()
-df.to_csv('./temp.csv',index=True)
+# #for column in numerical:
+# f, ax = plt.subplots()
+#   #  dfnorm.plot.scatter(x="lnprice", y=column,ax=ax, title="Original data")
+# dfnorm.plot.scatter(x="SALE DATE", y="SALE PRICE", ax=ax, color="Red")
+# #dfnorm.plot.scatter(x="lnprice", y="TOTAL UNITS", ax=ax[1], title="Normalized Data")
+# f.subplots_adjust(hspace=1)
+# plt.show()
+# # df.to_csv('./temp.csv',index=True)
+## Create Boxplots of data
+def auto_boxplot(df, plot_cols, by):
+    import matplotlib.pyplot as plt
+    for col in plot_cols:
+        fig = plt.figure(figsize=(9, 6))
+        ax = fig.gca()
+        df.boxplot(column = col, by = by, ax = ax)
+        ax.set_title('Box plots of {} bg {}'.format(col, by))
+        ax.set_ylabel(col)
+        plt.show()
+
+auto_boxplot(df,numerical, 'NEIGHBORHOOD')
