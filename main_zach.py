@@ -90,7 +90,7 @@ categorical=['NEIGHBORHOOD', 'BUILDING CLASS CATEGORY', 'TAX CLASS AT PRESENT', 
 
 
 df['lnprice']=np.log(df['SALE PRICE'])
-# df.to_csv('./tempnonenorm.csv',index=True)
+df.drop(columns=["SALE PRICE"])
 dfnorm=normalize(df, numerical)
 
 
