@@ -18,6 +18,13 @@ def averagePrice(df, y, x):
     plt.xticks(rotation=90)
     plt.show()
 
+def averagePrice2(df, y, x):
+    plt.figure(figsize=[20,10])
+    data=df.groupby(x)[y].mean().reset_index()
+    sns.barplot(x=x[0],y=y,hue=x[1], data=data)
+    plt.xticks(rotation=90)
+    plt.show()
+
 def priceSaleDate(df):
     fig, axes=plt.subplots(figsize=[20,10])
     sns.lineplot(y="lnprice", x="SALE_DATE", data=df)
