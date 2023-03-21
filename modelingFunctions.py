@@ -49,12 +49,10 @@ def linearRegressionModel(df, target, select_features):
     sns.histplot(residuals, kde=True)
     return model
 
-def itImputations(df, columns):
-    imputer = IterativeImputer(max_iter=50, random_state=42)
-    print("RELOADED")
-    # define the columns we want to impute
-    cols_to_impute = columns
+def iterativeImputations(df, columns):
+    #define imputator
+    i = IterativeImputer(max_iter=50, random_state=42)
 
-    # fit and transform the imputer on the columns we want to impute
-    df[cols_to_impute] = imputer.fit_transform(df[cols_to_impute])
+    #Impute defined columns
+    df[columns] = i.fit_transform(df[columns])
     return df
